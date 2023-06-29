@@ -1,48 +1,26 @@
-import { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { nanoid } from "@reduxjs/toolkit";
-
-interface PlanetDto {
-  name: string;
-  population: number;
-}
-
-interface PlanetResponce {
-  count: number;
-  next?: string;
-  previous?: string;
-  results: PlanetDto[];
-}
+import { People } from "./components/features/people/People";
+import { Person } from "./components/features/person/Person";
+import { Planet } from "./components/features/planet/Planet";
+import { Planets } from "./components/features/planets/Planets";
+import { Home } from "./components/pages/home/Home";
+import { Layout } from "./components/pages/Layout";
 
 export const App = () => {
-  const [result, setResult] = useState<PlanetResponce>();
-
-  useEffect(() => {
-    getApiData();
-  }, []);
-
-  const getApiData = async () => {
-    await fetch("https://swapi.dev/api/planets")
-      .then((response) => response.json())
-      .then((response) => setResult(response));
-  };
-
-  const planets = result?.results;
-
-  console.log(planets);
-
   return (
-    <div>
-      {planets && (
-        <ul>
-          {planets.map((el) => (
-            <li key={nanoid()}>
-              <span>{el.name}, </span>
-              <span>population: {el.population}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/">
+          <Route index element={<Home />}></Route>
+          <Route element={<Layout />}>
+            <Route path="planets" element={<Planets />}></Route>
+            <Route path="people" element={<People />}></Route>
+            <Route path="people/:personId" element={<Person />}></Route>
+            <Route path="planets/:planetId" element={<Planet />}></Route>
+          </Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 };
