@@ -49,19 +49,22 @@ export const Person = () => {
           if (!el[1].length) {
             el[1] = "-";
           }
-          //   else {
-          //     el[1] = "obj";
-          //   }
-        } else if (/^https:\/\/swapi.dev\/api\//.test(el[1])) {
-          el[1] = (
-            <SLink to={`/${el[1].replace(/^https:\/\/swapi.dev\/api\//, "")}`}>
-              {el[1]}
-            </SLink>
-          );
-
-          //   getLinkData(el[1]);
-          //   el[1] = <a>{getLinkData(el[1]).name}</a>;
+          // else {
+          //   el[1] = "obj";
+          // }
         }
+
+        // else if (/^https:\/\/swapi.dev\/api\//.test(el[1])) {
+        //   console.log(el[1]);
+        //   el[1] = (
+        //     <SLink to={`/${el[1].replace(/^https:\/\/swapi.dev\/api\//, "")}`}>
+        //       {el[1]}
+        //     </SLink>
+        //   );
+
+        //   //   getLinkData(el[1]);
+        //   //   el[1] = <a>{getLinkData(el[1]).name}</a>;
+        // }
 
         return el;
       });
@@ -88,10 +91,39 @@ export const Person = () => {
                     {el[0].replace("_", " ")}:
                   </span>
                   <span>
-                    {" "}
                     {
-                      el[1]
-                      //   el[1].length ? el[1] : "-"
+                      // el[1]
+                      typeof el[1] === "object" && el[1].length ? (
+                        <ul>
+                          {el[1].map((el: string) =>
+                            /^https:\/\/swapi.dev\/api\//.test(el) ? (
+                              <li key={nanoid()}>
+                                <SLink
+                                  to={`/${el.replace(
+                                    /^https:\/\/swapi.dev\/api\//,
+                                    ""
+                                  )}`}
+                                >
+                                  {el}
+                                </SLink>
+                              </li>
+                            ) : (
+                              <li key={nanoid()}> {el}</li>
+                            )
+                          )}
+                        </ul>
+                      ) : /^https:\/\/swapi.dev\/api\//.test(el[1]) ? (
+                        <SLink
+                          to={`/${el[1].replace(
+                            /^https:\/\/swapi.dev\/api\//,
+                            ""
+                          )}`}
+                        >
+                          {` ${el[1]}`}
+                        </SLink>
+                      ) : (
+                        ` ${el[1]}`
+                      )
                     }
                   </span>
                 </li>

@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { nanoid } from "@reduxjs/toolkit";
 
 import { LoadingSpinner } from "../../common/LoadingSpinner/LoadingSpinner";
-import { SH1 } from "../../common/styled";
+import { SH1, SLink } from "../../common/styled";
 import { PersonDto } from "../people/People";
 
 export const Planet = () => {
@@ -55,10 +55,39 @@ export const Planet = () => {
                       {el[0].replace("_", " ")}:
                     </span>
                     <span>
-                      {" "}
                       {
-                        el[1]
-                        //   el[1].length ? el[1] : "-"
+                        // el[1]
+                        typeof el[1] === "object" && el[1].length ? (
+                          <ul>
+                            {el[1].map((el: string) =>
+                              /^https:\/\/swapi.dev\/api\//.test(el) ? (
+                                <li key={nanoid()}>
+                                  <SLink
+                                    to={`/${el.replace(
+                                      /^https:\/\/swapi.dev\/api\//,
+                                      ""
+                                    )}`}
+                                  >
+                                    {el}
+                                  </SLink>
+                                </li>
+                              ) : (
+                                <li key={nanoid()}>{el}</li>
+                              )
+                            )}
+                          </ul>
+                        ) : /^https:\/\/swapi.dev\/api\//.test(el[1]) ? (
+                          <SLink
+                            to={`/${el[1].replace(
+                              /^https:\/\/swapi.dev\/api\//,
+                              ""
+                            )}`}
+                          >
+                            {` ${el[1]}`}
+                          </SLink>
+                        ) : (
+                          ` ${el[1]}`
+                        )
                       }
                     </span>
                   </li>
