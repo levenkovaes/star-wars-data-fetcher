@@ -5,8 +5,8 @@ export const Home = () => {
   return (
     <SHome>
       <SH1>Star Wars data</SH1>
-      <SLink to="/planets">Planets</SLink>
-      <SLink to="/people">People</SLink>
+      <SLink to="/planets?page=1">Planets</SLink>
+      <SLink to="/people?page=1">People</SLink>
     </SHome>
   );
 };

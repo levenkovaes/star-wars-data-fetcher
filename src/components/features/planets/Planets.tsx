@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { nanoid } from "@reduxjs/toolkit";
 
@@ -22,12 +23,17 @@ interface PlanetsResponse {
 export const Planets = () => {
   const [planetsResponse, setPlanetsResponse] = useState<PlanetsResponse>();
   const [isLoading, setIsLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
+
+  console.log(searchParams.get("page"));
 
   useEffect(() => {
     getPlanets();
   }, []);
 
-  const getPlanets = async (url = "https://swapi.dev/api/planets") => {
+  const getPlanets = async (
+    url = `https://swapi.dev/api/planets?page=${searchParams.get("page")}`
+  ) => {
     await axios.get(url).then((response) => {
       setPlanetsResponse(response.data);
       setIsLoading(false);
@@ -62,8 +68,13 @@ export const Planets = () => {
           <SButton
             disabled={!planetsResponse?.previous}
             onClick={() => {
-              if (planetsResponse?.previous)
+              if (planetsResponse?.previous) {
                 getPlanets(planetsResponse.previous);
+                setIsLoading(true);
+                setSearchParams({
+                  page: `${Number(searchParams.get("page")) - 1}`,
+                });
+              }
             }}
           >
             prev
@@ -74,6 +85,9 @@ export const Planets = () => {
               if (planetsResponse?.next) {
                 getPlanets(planetsResponse.next);
                 setIsLoading(true);
+                setSearchParams({
+                  page: `${Number(searchParams.get("page")) + 1}`,
+                });
               }
             }}
           >
