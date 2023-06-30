@@ -26,6 +26,52 @@ export const Planet = () => {
       });
   };
 
+  const data =
+    planetResponse &&
+    Object.entries(planetResponse)
+      .filter(
+        (el) =>
+          el[0] !== "name" &&
+          el[0] !== "url" &&
+          el[0] !== "created" &&
+          el[0] !== "edited"
+      )
+      .map(([key, value]) => {
+        let newKey = key.replace("_", " ");
+        let newValue = value;
+
+        if (Array.isArray(value) && !value.length) {
+          newValue = "-";
+        } else if (Array.isArray(value) && value.length) {
+          newValue = (
+            <ul>
+              {value.map((el: string) =>
+                /^https:\/\/swapi.dev\/api\//.test(el) ? (
+                  <li key={nanoid()}>
+                    <SLink
+                      to={`/${el.replace(/^https:\/\/swapi.dev\/api\//, "")}`}
+                    >
+                      {el}
+                    </SLink>
+                  </li>
+                ) : (
+                  <li key={nanoid()}> {el}</li>
+                )
+              )}
+            </ul>
+          );
+        } else if (/^https:\/\/swapi.dev\/api\//.test(value)) {
+          console.log(value);
+          newValue = (
+            <SLink to={`/${value.replace(/^https:\/\/swapi.dev\/api\//, "")}`}>
+              {value}
+            </SLink>
+          );
+        }
+
+        return [newKey, newValue];
+      });
+
   console.log(planetResponse);
   return (
     <div>
@@ -36,62 +82,22 @@ export const Planet = () => {
           <>
             <SH1>{planetResponse.name}</SH1>
             <ul>
-              {Object.entries(planetResponse)
-                ?.filter(
-                  (el) =>
-                    el[0] !== "name" &&
-                    el[0] !== "url" &&
-                    el[0] !== "created" &&
-                    el[0] !== "edited"
-                )
-                .map((el) => (
-                  <li key={nanoid()}>
-                    <span
-                      style={{
-                        fontWeight: "bolder",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      {el[0].replace("_", " ")}:
-                    </span>
-                    <span>
-                      {
-                        // el[1]
-                        typeof el[1] === "object" && el[1].length ? (
-                          <ul>
-                            {el[1].map((el: string) =>
-                              /^https:\/\/swapi.dev\/api\//.test(el) ? (
-                                <li key={nanoid()}>
-                                  <SLink
-                                    to={`/${el.replace(
-                                      /^https:\/\/swapi.dev\/api\//,
-                                      ""
-                                    )}`}
-                                  >
-                                    {el}
-                                  </SLink>
-                                </li>
-                              ) : (
-                                <li key={nanoid()}>{el}</li>
-                              )
-                            )}
-                          </ul>
-                        ) : /^https:\/\/swapi.dev\/api\//.test(el[1]) ? (
-                          <SLink
-                            to={`/${el[1].replace(
-                              /^https:\/\/swapi.dev\/api\//,
-                              ""
-                            )}`}
-                          >
-                            {` ${el[1]}`}
-                          </SLink>
-                        ) : (
-                          ` ${el[1]}`
-                        )
-                      }
-                    </span>
-                  </li>
-                ))}
+              {data?.map((el) => (
+                <li key={nanoid()}>
+                  <span
+                    style={{
+                      fontWeight: "bolder",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    {el[0]}:
+                  </span>
+                  <span>
+                    &nbsp;
+                    {el[1]}
+                  </span>
+                </li>
+              ))}
             </ul>
           </>
         )
