@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { nanoid } from "@reduxjs/toolkit";
 
@@ -21,12 +22,15 @@ interface IPeopleResponse {
 export const People = () => {
   const [peopleResponse, setPeopleResponse] = useState<IPeopleResponse>();
   const [isLoading, setIsLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
 
   useEffect(() => {
     getPeople();
   }, []);
 
-  const getPeople = async (url = "https://swapi.dev/api/people") => {
+  const getPeople = async (
+    url = `https://swapi.dev/api/people?page=${searchParams.get("page")}`
+  ) => {
     return await fetch(url)
       .then((result) => result.json())
       .then((result) => {
@@ -69,7 +73,13 @@ export const People = () => {
           <SButton
             disabled={!peopleResponse?.previous || isLoading}
             onClick={() => {
-              if (peopleResponse?.previous) getPeople(peopleResponse.previous);
+              if (peopleResponse?.previous) {
+                getPeople(peopleResponse.previous);
+                setIsLoading(true);
+                setSearchParams({
+                  page: `${Number(searchParams.get("page")) - 1}`,
+                });
+              }
             }}
           >
             prev
@@ -80,6 +90,9 @@ export const People = () => {
               if (peopleResponse?.next) {
                 getPeople(peopleResponse.next);
                 setIsLoading(true);
+                setSearchParams({
+                  page: `${Number(searchParams.get("page")) + 1}`,
+                });
               }
             }}
           >
