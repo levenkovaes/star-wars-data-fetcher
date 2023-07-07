@@ -1,48 +1,36 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
 import { nanoid } from "@reduxjs/toolkit";
 
+import {
+  getPlanets,
+  selectIsLoading,
+  selectPlanetsResponse,
+} from "../../../store/features/planetsSlice/planetsSlice";
 import { LoadingSpinner } from "../../common/LoadingSpinner/LoadingSpinner";
 import { SButton, SH1, SLink } from "../../common/styled";
 
-export interface PlanetDto {
-  name: string;
-  population: number;
-  url: string;
-}
-
-interface PlanetsResponse {
-  count: number;
-  next?: string;
-  previous?: string;
-  results: PlanetDto[];
-}
-
 export const Planets = () => {
-  const [planetsResponse, setPlanetsResponse] = useState<PlanetsResponse>();
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectIsLoading);
+  const planetsResponse = useSelector(selectPlanetsResponse);
+
   const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
 
-  console.log(searchParams.get("page"));
-
   useEffect(() => {
-    getPlanets();
-  }, []);
+    // handleGetPlanets();
 
-  const getPlanets = async (
-    url = `https://swapi.dev/api/planets?page=${searchParams.get("page")}`
-  ) => {
-    await axios.get(url).then((response) => {
-      setPlanetsResponse(response.data);
-      setIsLoading(false);
-    });
-  };
+    dispatch(
+      getPlanets({
+        url: `https://swapi.dev/api/planets?page=${searchParams.get("page")}`,
+      })
+    );
+  }, [dispatch, searchParams]);
 
   const planets = planetsResponse?.results;
 
-  // console.log(planets);
   return (
     <div>
       <SH1>Planets</SH1>
@@ -69,8 +57,6 @@ export const Planets = () => {
             disabled={!planetsResponse?.previous}
             onClick={() => {
               if (planetsResponse?.previous) {
-                getPlanets(planetsResponse.previous);
-                setIsLoading(true);
                 setSearchParams({
                   page: `${Number(searchParams.get("page")) - 1}`,
                 });
@@ -83,8 +69,6 @@ export const Planets = () => {
             disabled={!planetsResponse?.next}
             onClick={() => {
               if (planetsResponse?.next) {
-                getPlanets(planetsResponse.next);
-                setIsLoading(true);
                 setSearchParams({
                   page: `${Number(searchParams.get("page")) + 1}`,
                 });
