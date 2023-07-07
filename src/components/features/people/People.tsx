@@ -1,50 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
 import { nanoid } from "@reduxjs/toolkit";
 
+import {
+  getPeople,
+  selectIsLoading,
+  selectPeopleResponse,
+} from "../../../store/features/peopleSlice/peopleSlice";
 import { LoadingSpinner } from "../../common/LoadingSpinner/LoadingSpinner";
 import { SButton, SH1, SLink } from "../../common/styled";
 
-export interface PersonDto {
-  name: string;
-  url: string;
-  homeworld: string;
-}
-
-interface IPeopleResponse {
-  count: number;
-  next?: string;
-  previous?: string;
-  results: PersonDto[];
-}
-
 export const People = () => {
-  const [peopleResponse, setPeopleResponse] = useState<IPeopleResponse>();
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectIsLoading);
+  const peopleResponse = useSelector(selectPeopleResponse);
   const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
 
   useEffect(() => {
-    getPeople();
-  }, []);
+    dispatch(
+      getPeople({
+        url: `https://swapi.dev/api/people?page=${searchParams.get("page")}`,
+      })
+    );
+  }, [dispatch, searchParams]);
 
-  const getPeople = async (
-    url = `https://swapi.dev/api/people?page=${searchParams.get("page")}`
-  ) => {
-    return await fetch(url)
-      .then((result) => result.json())
-      .then((result) => {
-        setPeopleResponse(result);
-        setIsLoading(false);
-      });
-  };
-
-  //   console.log(peopleResponse?.results[0]);
-  //   console.log(
-  //     peopleResponse?.results[0].url.match(
-  //       /(?<=https:\/\/swapi.dev\/api\/people\/)\d+(?=\/)/
-  //     )
-  //   );
+  const people = peopleResponse?.results;
 
   return (
     <div>
@@ -54,8 +36,8 @@ export const People = () => {
       ) : (
         <>
           <ul>
-            {peopleResponse &&
-              peopleResponse.results.map((el) => {
+            {people &&
+              people.map((el) => {
                 return (
                   <li key={nanoid()}>
                     <SLink
@@ -74,8 +56,6 @@ export const People = () => {
             disabled={!peopleResponse?.previous || isLoading}
             onClick={() => {
               if (peopleResponse?.previous) {
-                getPeople(peopleResponse.previous);
-                setIsLoading(true);
                 setSearchParams({
                   page: `${Number(searchParams.get("page")) - 1}`,
                 });
@@ -88,8 +68,6 @@ export const People = () => {
             disabled={!peopleResponse?.next || isLoading}
             onClick={() => {
               if (peopleResponse?.next) {
-                getPeople(peopleResponse.next);
-                setIsLoading(true);
                 setSearchParams({
                   page: `${Number(searchParams.get("page")) + 1}`,
                 });

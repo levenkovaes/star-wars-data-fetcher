@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { put, takeLatest } from "redux-saga/effects";
 
 import {
@@ -9,8 +9,7 @@ import {
 
 export function* getPlanetsSaga(action: ReturnType<typeof getPlanets>) {
   try {
-    const response = yield axios.get("https://swapi.dev/api/planets");
-    console.log(response.data);
+    const response: AxiosResponse = yield axios.get(action.payload.url);
     yield put(getPlanetsSuccess(response.data));
   } catch (e) {
     console.log(e);
