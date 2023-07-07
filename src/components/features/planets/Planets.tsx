@@ -20,8 +20,6 @@ export const Planets = () => {
   const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
 
   useEffect(() => {
-    // handleGetPlanets();
-
     dispatch(
       getPlanets({
         url: `https://swapi.dev/api/planets?page=${searchParams.get("page")}`,

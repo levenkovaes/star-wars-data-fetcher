@@ -11,7 +11,6 @@ export const Person = () => {
   const { personId } = useParams();
   const [personResponse, setPersonResponse] = useState<IPersonDto>();
   const [isLoading, setIsLoading] = useState(true);
-  //   const [personData, setPersonData] = useState<PersonDto>();
 
   useEffect(() => {
     getPerson();
@@ -24,15 +23,7 @@ export const Person = () => {
         setPersonResponse(response);
         setIsLoading(false);
       });
-    //   .then(() => setPersonData(personResponse));
   };
-
-  //   const getLinkData = async (link: string) => {
-  //     const result = await (await axios.get(link)).data;
-
-  //     console.log(result);
-  //     return { name: result.name, url: result.url };
-  //   };
 
   const data =
     personResponse &&
