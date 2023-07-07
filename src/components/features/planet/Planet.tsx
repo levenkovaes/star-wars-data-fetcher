@@ -4,13 +4,13 @@ import { useParams } from "react-router-dom";
 
 import { nanoid } from "@reduxjs/toolkit";
 
+import { IPlanetDto } from "../../../store/features/planetsSlice/types";
 import { LoadingSpinner } from "../../common/LoadingSpinner/LoadingSpinner";
 import { SH1, SLink } from "../../common/styled";
-import { PersonDto } from "../people/People";
 
 export const Planet = () => {
   const { planetId } = useParams();
-  const [planetResponse, setPlanetResponse] = useState<PersonDto>();
+  const [planetResponse, setPlanetResponse] = useState<IPlanetDto>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

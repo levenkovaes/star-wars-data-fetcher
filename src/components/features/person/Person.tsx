@@ -3,13 +3,13 @@ import { useParams } from "react-router-dom";
 
 import { nanoid } from "@reduxjs/toolkit";
 
+import { IPersonDto } from "../../../store/features/peopleSlice/types";
 import { LoadingSpinner } from "../../common/LoadingSpinner/LoadingSpinner";
 import { SH1, SLink } from "../../common/styled";
-import { PersonDto } from "../people/People";
 
 export const Person = () => {
   const { personId } = useParams();
-  const [personResponse, setPersonResponse] = useState<PersonDto>();
+  const [personResponse, setPersonResponse] = useState<IPersonDto>();
   const [isLoading, setIsLoading] = useState(true);
   //   const [personData, setPersonData] = useState<PersonDto>();
 
