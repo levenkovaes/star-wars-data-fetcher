@@ -21,3 +21,7 @@ The Star Wars Data Fetcher project retrieves and displays data from the Star War
 
 ## Usage
     $ npm start
+
+## License
+This project is licensed under the MIT license <br> 
+Copyright © 2024 [Ekaterina Levenkova](https://github.com/levenkovaes)
