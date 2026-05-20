@@ -3,6 +3,12 @@
 ## About The App
 The Star Wars Data Fetcher project retrieves and displays data from the Star Wars API (SWAPI). Making API calls, the project accesses information about characters and planets. The fetched data is displayed in a user-friendly interface, providing an engaging way to explore the vast lore of Star Wars.
 
+## API Dependency Notice
+This project relies on the public Star Wars API originally hosted at swapi.dev.
+
+The version of SWAPI is currently no longer reliably available. As a result, the API endpoints used by this project may be inaccessible or may not return valid responses, which can cause the application to stop functioning correctly.
+
+
 ## Technologies
 - TypeScript<br>
 - React<br>
